@@ -1,0 +1,111 @@
+import pygame
+
+class Player(pygame.sprite.Sprite):
+    # Car's different assets
+    car_no = pygame.image.load("pixel.png")
+    car_front = pygame.image.load('car_front.png')
+    car_back = pygame.image.load('car_back.png')
+    car_left = pygame.image.load('car_left.png')
+    car_right = pygame.image.load('car_right.png')
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        # Setting intial condition for car, before we start moving
+        self.current_view = Player.car_right.convert()
+        self.image = self.current_view.convert()
+        self.image.set_colorkey(BLACK)
+        # Setting boundaries
+        self.rect = self.image.get_rect()
+        # Start off on the center of the screen
+        self.rect.center = (WIDTH / 2, HEIGHT / 2)
+        self.speed_x = 0
+        self.speed_y = 0
+    def update(self): # any code here will happen every time the game loop updates
+        # Grabbing keyboard input and modifying direction/orientation
+        keystate = pygame.key.get_pressed()
+        if keystate[pygame.K_LEFT]:
+            self.speed_x = -5
+            self.current_view =  Player.car_left
+        elif keystate[pygame.K_RIGHT]:
+            self.speed_x = 5
+            self.current_view =  Player.car_right
+        elif keystate[pygame.K_DOWN]:
+            self.speed_y = 5
+            self.current_view =  Player.car_front
+        elif keystate[pygame.K_UP]:
+            self.speed_y = -5
+            self.current_view =  Player.car_back
+        # Making the walls the boundaries
+        if self.rect.right > WIDTH:
+            self.rect.right = WIDTH
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.top < 0:
+            self.rect.top = 0
+        if self.rect.bottom > HEIGHT:
+            self.rect.bottom = HEIGHT
+        # You did the math, now update the speeds
+        self.rect.x += self.speed_x
+        self.rect.y += self.speed_y
+        # Change orientation? Update the image
+        self.image = self.current_view.convert()
+        self.image.set_colorkey(BLACK)
+
+class Pedestrians(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('pedestrian_ian.png').convert()
+        self.image.set_colorkey(BLACK)
+        # Setting boundaries
+        self.rect = self.image.get_rect()
+        # Spawning attributes for Ian is random on the page
+        self.rect.x = random.randrange(WIDTH)
+        self.rect.y = random.randrange(HEIGHT)
+        self.speed_x = random.randrange(1, 2) * random.choice((-1,1))
+        self.speed_y = random.randrange(1, 2) * random.choice((-1,1))
+    def update(self):
+        self.rect.y += self.speed_y 
+        self.rect.x += self.speed_x
+        # Run off the screen and you respawn
+        if ((self.rect.bottom > HEIGHT) or (self.rect.top < 0)) or ((self.rect.right > WIDTH) or (self.rect.left < 0)):
+            # Making the walls the boundaries
+            if self.rect.right > WIDTH -8 :
+                self.speed_x = self.speed_x * -1
+            if self.rect.left < 8:
+                self.speed_x = self.speed_x * -1
+            if self.rect.top < 8:
+                self.speed_y = self.speed_y * -1
+            if self.rect.bottom > HEIGHT -8:
+                self.speed_y = self.speed_y * -1
+            # You did the math, now update the speeds
+            self.rect.x += self.speed_x
+            self.rect.y += self.speed_y
+            
+class People(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('passenger_lisa.png').convert()
+        self.image.set_colorkey(BLACK)
+        # Setting boundaries
+        self.rect = self.image.get_rect()
+        # Spawning attributes for Lisa is random on the page
+        self.rect.x = random.randrange(WIDTH)
+        self.rect.y = random.randrange(HEIGHT)
+        self.speed_x = random.randrange(1, 3) * random.choice((-1,1))
+        self.speed_y = random.randrange(1, 3) * random.choice((-1,1))
+    def update(self):
+        self.rect.y += self.speed_y 
+        self.rect.x += self.speed_x
+        # Run off the screen and you respawn
+        if ((self.rect.bottom > HEIGHT) or (self.rect.top < 0)) or ((self.rect.right > WIDTH) or (self.rect.left < 0)):
+            # Making the walls the boundaries
+            if self.rect.right > WIDTH -8 :
+                self.speed_x = self.speed_x * -1
+            if self.rect.left < 8:
+                self.speed_x = self.speed_x * -1
+            if self.rect.top < 8:
+                self.speed_y = self.speed_y * -1
+            if self.rect.bottom > HEIGHT -8:
+                self.speed_y = self.speed_y * -1
+            # You did the math, now update the speeds
+            self.rect.x += self.speed_x
+            self.rect.y += self.speed_y
